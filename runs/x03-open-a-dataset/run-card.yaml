@@ -1,0 +1,44 @@
+# Written and committed before any expression value was read. The file's dimensions and labels were looked at first.
+id: x03-open-a-dataset
+title: "Open a real Perturb-seq file and see what is actually in it"
+kind: exploration
+status: complete
+registered: 2026-11-08
+question: "What does a real perturbation experiment look like when you open the file, and did the targeted genes actually go down?"
+predictions:
+  - statement: "More than 75% of the matrix entries are zero."
+    refuted_by: "75% or fewer being zero."
+  - statement: "The median cell has RNA detected from fewer than half of the genes measured."
+    refuted_by: "A median of half or more."
+  - statement: "For at least five of the seven named target genes, expression is lower in the cells carrying that gene's guide than in the other cells."
+    refuted_by: "Fewer than five of seven."
+  - statement: "Knockdown is not total: every target gene is still detected in at least some of its own targeted cells."
+    refuted_by: "Any target at 0% detection in its targeted cells."
+dataset:
+  name: "Adamson et al. 2016 pilot (GSM2406675), as harmonized by scPerturb"
+  url: https://zenodo.org/records/13350497
+  retrieved: 2026-11-08
+  license: "CC BY 4.0"
+  subset: "AdamsonWeissman2016_GSM2406675_10X001.h5ad, sha256 119e3c1cf7dede4e13f887b86f9bcd797a9dc29213ee57d36aa80012d93f1c1c, all 5,768 cells"
+  citation: "Adamson et al., Cell 2016, doi 10.1016/j.cell.2016.11.048; Peidli et al., scPerturb, Zenodo doi 10.5281/zenodo.13350497"
+compute:
+  where: local
+  notes: "runs/x03-open-a-dataset/open.py, needs h5py, numpy and scipy"
+
+# ─── everything below is written only after the run ───
+observed: >
+  Three of four predictions held and one missed. The matrix is 5,768 cells by 35,635 genes, matching the 5,768 cells the paper
+  reports, and 92.82% of its 205,542,680 entries are zero. The median cell had 2,580 genes detected (7.24%). All seven named
+  targets were lower in their own targeted cells than in the other cells, with ratios from 0.0 to 0.611. MISS: SNAI1 was detected
+  in 0 of its 562 targeted cells, against 4.6% of other cells.
+interpreted: >
+  The targeted genes went down, which is what the guides are for. SNAI1 at zero does not show the gene was silenced completely:
+  it is so rarely detected in this file that zero of 562 cells is not far from what low capture alone could give.
+failures:
+  - "Knockdown-not-total prediction missed: SNAI1 was detected in 0 of 562 targeted cells."
+  - "First run counted 10 unlabelled cells as ZNF326, because a missing-label code silently indexed the last category. Caught by comparing against the file's own label counts. Fixed in 7c59d38 and re-run."
+  - "We could not identify which guide is the non-targeting control from the paper, so each group is compared with all other cells, including cells with other perturbations."
+  - "Low-count genes make ratios unstable: EP300 and SNAI1 rest on a few molecules. No statistical test was run."
+  - "One pilot, one cell line (K562), a leukemia line and not a normal cell."
+  - "The file's cell count matching the paper's was seen before registering, so it is not listed as a prediction."
+artifact: runs/x03-open-a-dataset/results.md
