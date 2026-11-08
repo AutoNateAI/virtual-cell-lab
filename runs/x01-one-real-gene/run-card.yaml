@@ -1,0 +1,49 @@
+# Written and committed before any record was opened. Everything above the results line is the pre-registration.
+id: x01-one-real-gene
+title: "Look up one real gene, CFTR, and check the public records against each other"
+kind: exploration
+status: complete
+registered: 2026-11-08
+question: "What do the public records actually say about one gene and its protein, and do independent databases agree?"
+predictions:
+  - statement: "HGNC, NCBI Gene, Ensembl and UniProt all point at the same single gene on chromosome 7."
+    refuted_by: "Any of them disagreeing on the gene's symbol or chromosome."
+  - statement: "Translating the RefSeq coding letters ourselves, three at a time, gives exactly the protein sequence UniProt reports."
+    refuted_by: "Any mismatch in length or at any position."
+  - statement: "Position 508 of the protein is phenylalanine, and it sits inside a named functional domain."
+    refuted_by: "A different amino acid at 508, or no domain annotated there."
+  - statement: "Removing the three delta F508 letters from the coding sequence gives the normal protein minus that one amino acid, and nothing else changes."
+    refuted_by: "Any other change in the resulting protein, such as a shifted reading frame."
+  - statement: "ClinVar classifies this exact variant as pathogenic."
+    refuted_by: "ClinVar giving any other classification, or having no such record."
+dataset:
+  name: "Public records for CFTR: HGNC, NCBI Gene, RefSeq, Ensembl, UniProtKB, ClinVar"
+  url: https://www.ncbi.nlm.nih.gov/gene/?term=CFTR%5Bsym%5D+AND+human%5Borgn%5D
+  retrieved: 2026-11-08
+  license: "NCBI places no restrictions on its molecular data, and asks for acknowledgment; HGNC imposes no restrictions and asks for citation; UniProt is CC BY 4.0; Ensembl's terms were not read for this run"
+  subset: "One gene, CFTR, and its MANE Select transcript and reviewed protein entry"
+  citation: "HGNC (RRID:SCR_002827); NCBI Gene; RefSeq; Ensembl; UniProtKB; ClinVar"
+compute:
+  where: local
+  notes: "runs/x01-one-real-gene/lookup.py, Python standard library only"
+
+# ─── everything below is written only after the run ───
+observed: >
+  All five registered predictions held. HGNC:1884, NCBI Gene 1080, Ensembl ENSG00000001626 and UniProt P13569 point at one
+  gene, CFTR, on chromosome 7 (7q31.2). Translating RefSeq NM_000492.4's 4,443 coding letters gave exactly UniProt's 1,480
+  amino acids, plus a stop codon. Position 508 is phenylalanine, inside UniProt's "ABC transporter 1" domain (423 to 646).
+  Coding letters 1521 to 1523 are CTT. Removing them turns codon 507 from ATC to ATT, both isoleucine, and removes the
+  phenylalanine, giving a 1,479 amino acid protein identical to the normal one apart from position 508. ClinVar VCV000007105
+  classifies the variant as Pathogenic, at the review status "practice guideline".
+interpreted: >
+  The deleted letters straddle two codons rather than being codon 508 itself, yet the protein still only loses one amino
+  acid, because the reading frame survives a deletion of exactly three letters. Everything about what this does to a person
+  comes from the records' annotations, not from this run.
+failures:
+  - "First run's ClinVar check came back empty: our script read only the first 10 of 16 search hits and the record was the 16th. Fixed in fbdceae and re-run; the registered prediction did not change."
+  - "Gene size depends on the database: NCBI gives 188,641 letters and Ensembl's gene record 428,852. Ensembl's MANE Select transcript spans the same 188,641. Never quote a gene length without naming the record."
+  - "The databases are not independent witnesses. RefSeq and UniProt draw on shared sequence evidence, and HGNC links the others together, so their agreement is a consistency check and not independent confirmation."
+  - "Removing letters from a text string only shows the sequence consequence. This run did not measure a protein, a cell or a patient."
+  - "ClinVar's record is titled against NM_000492.3 while our sequence is NM_000492.4, and its classification was last evaluated in 2004. The variant's letters were checked against .4 by this run."
+  - "Ensembl's terms of use were not read."
+artifact: runs/x01-one-real-gene/results.md

@@ -1,0 +1,208 @@
+{
+  "symbol": "CFTR",
+  "hgnc": {
+    "hgnc_id": "HGNC:1884",
+    "symbol": "CFTR",
+    "name": "CF transmembrane conductance regulator",
+    "location": "7q31.2",
+    "entrez_id": "1080",
+    "ensembl_gene_id": "ENSG00000001626",
+    "uniprot_ids": [
+      "P13569"
+    ],
+    "mane_select": [
+      "ENST00000003084.11",
+      "NM_000492.4"
+    ]
+  },
+  "ncbi_gene": {
+    "id": "1080",
+    "name": "CFTR",
+    "description": "CF transmembrane conductance regulator",
+    "chromosome": "7",
+    "map_location": "7q31.2",
+    "start": 117480024,
+    "stop": 117668664,
+    "accession": "NC_000007.14",
+    "exon_count": 27,
+    "span_letters": 188641
+  },
+  "ensembl": {
+    "id": "ENSG00000001626",
+    "display_name": "CFTR",
+    "seq_region_name": "7",
+    "start": 117287120,
+    "end": 117715971,
+    "strand": 1,
+    "biotype": "protein_coding",
+    "assembly_name": "GRCh38"
+  },
+  "uniprot": {
+    "accession": "P13569",
+    "name": "Cystic fibrosis transmembrane conductance regulator",
+    "length": 1480,
+    "reviewed": "UniProtKB reviewed (Swiss-Prot)",
+    "function": [
+      "Epithelial ion channel that plays an important role in the regulation of epithelial ion and water transport and fluid homeostasis (PubMed:26823428). Mediates the transport of chloride ions across the cell membrane (PubMed:10792060, PubMed:11524016, PubMed:11707463, PubMed:12519745, PubMed:12529365, PubMed:12588899, PubMed:12727866, PubMed:15010471, PubMed:17036051, PubMed:1712898, PubMed:17182731, PubMed:19398555, PubMed:19621064, PubMed:22178883, PubMed:25330774, PubMed:26846474, PubMed:28087700, PubMed:8910473, PubMed:9804160). Possesses an intrinsic ATPase activity and utilizes ATP to gate its channel; the passive flow of anions through the channel is gated by cycles of ATP binding and hydrolysis by the ATP-binding domains (PubMed:11524016, PubMed:15284228, PubMed:26627831, PubMed:8910473). The ion channel is also permeable to HCO(3)(-); selectivity depends on the extracellular chloride concentration (PubMed:15010471, PubMed:19019741). In vitro, mediates ATP-dependent glutathione flux (PubMed:12727866). Exerts its function also by modulating the activity of other ion channels and transporters (PubMed:12403779, PubMed:22121115, PubMed:22178883, PubMed:27941075). Plays an important role in airway fluid homeostasis (PubMed:16645176, PubMed:19621064, PubMed:26823428). Contributes to the regulation of the pH and the ion content of the airway surface fluid layer and thereby plays an important role in defense against pathogens (PubMed:14668433, PubMed:16645176, PubMed:26823428). Modulates the activity of the epithelial sodium channel (ENaC) complex, in part by regulating the cell surface expression of the ENaC complex (PubMed:17182731, PubMed:17434346, PubMed:27941075). Inhibits the activity of the ENaC channel containing subunits SCNN1A, SCNN1B and SCNN1G (PubMed:17182731). Inhibits the activity of the ENaC channel containing subunits SCNN1D, SCNN1B and SCNN1G, but not of the ENaC channel containing subunits SCNN1A, SCNN1B and SCNN1G (PubMed:17182731, PubMed:27941075). May regulate bicarbonate secretion and salvage in epithelial cells by regulating the transporter SLC4A7 (PubMed:12403779). Can inhibit the chloride channel activity of ANO1 (PubMed:22178883). Plays a role in the chloride and bicarbonate homeostasis during sperm epididymal maturation and capacitation (PubMed:19923167, PubMed:27714810, PubMed:29393851)"
+    ],
+    "subcellular_locations": [
+      "Apical cell membrane",
+      "Early endosome membrane",
+      "Cell membrane",
+      "Recycling endosome membrane",
+      "Endoplasmic reticulum membrane",
+      "Nucleus"
+    ],
+    "domains": [
+      {
+        "description": "ABC transmembrane type-1 1",
+        "start": 81,
+        "end": 365
+      },
+      {
+        "description": "ABC transporter 1",
+        "start": 423,
+        "end": 646
+      },
+      {
+        "description": "ABC transmembrane type-1 2",
+        "start": 859,
+        "end": 1155
+      },
+      {
+        "description": "ABC transporter 2",
+        "start": 1210,
+        "end": 1443
+      }
+    ],
+    "regions_at_508": [
+      {
+        "type": "Chain",
+        "description": "Cystic fibrosis transmembrane conductance regulator",
+        "start": 1,
+        "end": 1480
+      },
+      {
+        "type": "Topological domain",
+        "description": "Cytoplasmic",
+        "start": 359,
+        "end": 858
+      },
+      {
+        "type": "Domain",
+        "description": "ABC transporter 1",
+        "start": 423,
+        "end": 646
+      },
+      {
+        "type": "Mutagenesis",
+        "description": "Impaired maturation of glycan chains indicating impaired trafficking from the endoplasmic reticulum to the cell membrane.",
+        "start": 508,
+        "end": 508
+      }
+    ],
+    "natural_variants_at_508": [
+      {
+        "description": "in CF",
+        "original": null,
+        "alternatives": null,
+        "start": 220,
+        "end": 1480,
+        "id": "VAR_080302"
+      },
+      {
+        "description": "in dbSNP:rs74571530",
+        "original": "F",
+        "alternatives": [
+          "C"
+        ],
+        "start": 508,
+        "end": 508,
+        "id": "VAR_000172"
+      },
+      {
+        "description": "in CF and CBAVD; most common mutation in Caucasian CF chromosomes; impairs protein folding and stability; causes local changes to the surface that mediates interactions between domains; decreases frequency of channel opening in vitro; binds to the cytokeratin-8 and through this binding is primed for the degradation pathway that ends in the proteasome thus impairing trafficking; impairs maturation and trafficking to the cell membrane; impairs recycling to the cell membrane after endocytosis; abolishes MARCHF2-mediated degradation; dbSNP:rs121909001 and dbSNP:rs113993960",
+        "original": null,
+        "alternatives": null,
+        "start": 508,
+        "end": 508,
+        "id": "VAR_000171"
+      }
+    ],
+    "natural_variant_count": 209
+  },
+  "refseq": {
+    "transcript": "NM_000492.4",
+    "transcript_letters": 6070,
+    "cds_start": 71,
+    "cds_end": 4513,
+    "cds_letters": 4443,
+    "codons": 1481
+  },
+  "checks": {
+    "our_translation_matches_refseq_translation": true,
+    "our_translation_matches_uniprot": true,
+    "protein_length": 1480,
+    "position_508": "F"
+  },
+  "delta_f508": {
+    "removed_letters_1521_to_1523": "CTT",
+    "codons_before": {
+      "505": "AAT",
+      "506": "ATC",
+      "507": "ATC",
+      "508": "TTT",
+      "509": "GGT",
+      "510": "GTT",
+      "511": "TCC"
+    },
+    "amino_acids_before": {
+      "505": "N",
+      "506": "I",
+      "507": "I",
+      "508": "F",
+      "509": "G",
+      "510": "V",
+      "511": "S"
+    },
+    "codons_after": {
+      "505": "AAT",
+      "506": "ATC",
+      "507": "ATT",
+      "508": "GGT",
+      "509": "GTT",
+      "510": "TCC"
+    },
+    "edited_protein_length": 1479,
+    "same_as_normal_minus_position_508": true,
+    "cds_letters_after": 4440
+  },
+  "clinvar_search_ids": [
+    "2573430",
+    "1705126",
+    "634837",
+    "550500",
+    "517253",
+    "495928",
+    "54058",
+    "54030",
+    "53940",
+    "53854",
+    "53565",
+    "53246",
+    "53174",
+    "35816",
+    "7159",
+    "7105"
+  ],
+  "clinvar": [
+    {
+      "id": "7105",
+      "title": "NM_000492.3(CFTR):c.1521_1523del (p.Phe508del)",
+      "accession": "VCV000007105",
+      "germline_classification": "Pathogenic",
+      "review_status": "practice guideline",
+      "last_evaluated": "2004/03/03 00:00"
+    }
+  ]
+}
