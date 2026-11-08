@@ -9,6 +9,7 @@ and the raw records it used. What went wrong is written down on the card too.
 | Run | What it asks | Result |
 |---|---|---|
 | [x01](runs/x01-one-real-gene/) | What do the public records say about one gene, CFTR, and do they agree? | [results](runs/x01-one-real-gene/results.md) |
+| [x02](runs/x02-two-cell-types/) | How different are the genes switched on in a lung cell and a T cell? | [results](runs/x02-two-cell-types/results.md) |
 
 ## Licences
 

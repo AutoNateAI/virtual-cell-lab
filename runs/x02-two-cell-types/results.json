@@ -1,0 +1,140 @@
+{
+  "census_version": "2025-11-08",
+  "dataset_id": "0d2ee4ac-05ee-40b2-afb6-ebb584caa867",
+  "assay": "10x 3' v3",
+  "protein_coding_genes": 20080,
+  "seed": 13,
+  "on_threshold": 0.1,
+  "types": {
+    "lung": {
+      "cell_type": "pulmonary alveolar type 2 cell",
+      "cells": 1000,
+      "donors": {
+        "TSP14": 383,
+        "TSP2": 368,
+        "TSP25": 138,
+        "TSP1": 111
+      },
+      "median_genes_detected_per_cell": 4982.5,
+      "median_share_of_protein_coding_genes_per_cell": 0.24813247011952191,
+      "genes_on": 10468
+    },
+    "immune": {
+      "cell_type": "CD4-positive, alpha-beta T cell",
+      "cells": 1000,
+      "donors": {
+        "TSP2": 472,
+        "TSP25": 263,
+        "TSP1": 139,
+        "TSP14": 126
+      },
+      "median_genes_detected_per_cell": 1792.5,
+      "median_share_of_protein_coding_genes_per_cell": 0.0892679282868526,
+      "genes_on": 5683
+    }
+  },
+  "post_hoc_counts": {
+    "lung": {
+      "SFTPC": {
+        "mean_molecules_per_cell": 1994.12,
+        "median_molecules_in_detecting_cells": 1757.0,
+        "share_of_cell_rna_percent": 6.828
+      },
+      "CD3E": {
+        "mean_molecules_per_cell": 0.03,
+        "median_molecules_in_detecting_cells": 1.0,
+        "share_of_cell_rna_percent": 0.0
+      },
+      "ACTB": {
+        "mean_molecules_per_cell": 71.81,
+        "median_molecules_in_detecting_cells": 28.0,
+        "share_of_cell_rna_percent": 0.246
+      },
+      "CFTR": {
+        "mean_molecules_per_cell": 3.04,
+        "median_molecules_in_detecting_cells": 2.0,
+        "share_of_cell_rna_percent": 0.01
+      }
+    },
+    "immune": {
+      "SFTPC": {
+        "mean_molecules_per_cell": 4.82,
+        "median_molecules_in_detecting_cells": 4.0,
+        "share_of_cell_rna_percent": 0.107
+      },
+      "CD3E": {
+        "mean_molecules_per_cell": 1.71,
+        "median_molecules_in_detecting_cells": 2.0,
+        "share_of_cell_rna_percent": 0.038
+      },
+      "ACTB": {
+        "mean_molecules_per_cell": 8.09,
+        "median_molecules_in_detecting_cells": 6.0,
+        "share_of_cell_rna_percent": 0.18
+      },
+      "CFTR": {
+        "mean_molecules_per_cell": 0.02,
+        "median_molecules_in_detecting_cells": 1.0,
+        "share_of_cell_rna_percent": 0.0
+      }
+    }
+  },
+  "genes_on_in_both": 5350,
+  "genes_on_in_lung_only": 5118,
+  "genes_on_in_immune_only": 333,
+  "genes_on_in_neither": 9279,
+  "watched": {
+    "ACTB": {
+      "lung_fraction": 0.989,
+      "immune_fraction": 0.899,
+      "lung_mean_log": 2.6733999252319336,
+      "immune_mean_log": 2.4123001098632812,
+      "difference": 0.26109999418258667
+    },
+    "CD3E": {
+      "lung_fraction": 0.018,
+      "immune_fraction": 0.708,
+      "lung_mean_log": 0.011500000022351742,
+      "immune_mean_log": 1.232100009918213,
+      "difference": -1.2206000089645386
+    },
+    "CFTR": {
+      "lung_fraction": 0.654,
+      "immune_fraction": 0.014,
+      "lung_mean_log": 0.5292999744415283,
+      "immune_mean_log": 0.018400000408291817,
+      "difference": 0.5109000205993652
+    },
+    "SFTPC": {
+      "lung_fraction": 0.999,
+      "immune_fraction": 0.885,
+      "lung_mean_log": 6.276000022888184,
+      "immune_mean_log": 2.120300054550171,
+      "difference": 4.155700206756592
+    }
+  },
+  "top_lung": [
+    "SFTPC",
+    "SFTPB",
+    "SFTPA2",
+    "SFTPA1",
+    "NAPSA",
+    "MACROD2",
+    "SLPI",
+    "ZNF385B",
+    "NPC2",
+    "MGST1"
+  ],
+  "top_immune": [
+    "IL7R",
+    "PTPRC",
+    "ARHGAP15",
+    "SRGN",
+    "FYN",
+    "CD69",
+    "SKAP1",
+    "CNOT6L",
+    "ZFP36L2",
+    "CXCR4"
+  ]
+}
