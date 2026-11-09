@@ -65,7 +65,7 @@ failures:
   - "Prediction 6 missed: 7 genes passed correction on labels that carry no signal, against a limit of 5. Further shuffles show this was not one bad draw."
   - "We expected rare genes to explain the false alarms after seeing them. 25 of 62 came from genes seen in 10 or more cells, so that explanation is incomplete."
   - "LYZ fell short of two-fold (1.89) because it is detected in 53% of cells outside its best cluster. Prediction 3 held on four of five, not five of five."
-  - "Not blind: this is Scanpy's tutorial dataset and the page was read before registering. It reports 8 clusters at resolution 0.7, seed 0; we got 7 at seed 13 with newer library versions. We did not chase the difference."
+  - "Not blind: this is Scanpy's tutorial dataset and the page was read before registering. It reports 8 clusters at resolution 0.7, seed 0; we got 7 at seed 13, and we do not know what library versions the page was built with. We did not chase the difference."
   - "The real-label test is circular, since the clusters came from the same data, so 2,060 is an overcount of unknown size."
   - "Cluster names are inferred from marker genes; nothing here validates them independently. One donor, one sample."
   - "Run only locally on Python 3.12. The notebook has a Colab install cell that was not exercised, so 'it runs in Colab' is untested."
