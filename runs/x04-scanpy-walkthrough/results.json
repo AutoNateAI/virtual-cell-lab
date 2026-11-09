@@ -1,0 +1,283 @@
+{
+  "run": "x04-scanpy-walkthrough",
+  "versions": {
+    "scanpy": "1.12.5"
+  },
+  "raw": {
+    "cells": 2700,
+    "genes": 32738,
+    "entries": 88392600,
+    "zero_pct": 97.41
+  },
+  "qc": {
+    "cells_before": 2700,
+    "cells_after": 2638,
+    "genes_after": 13714,
+    "median_genes_per_cell": 819
+  },
+  "pca": {
+    "hvg": 2000,
+    "variance_pct_first_2": 3.79,
+    "variance_pct_first_40": 12.45
+  },
+  "clusters": {
+    "resolution": 0.7,
+    "n": 7,
+    "sizes": {
+      "0": 1167,
+      "1": 442,
+      "4": 417,
+      "2": 341,
+      "3": 219,
+      "5": 37,
+      "6": 15
+    }
+  },
+  "markers": [
+    {
+      "gene": "MS4A1",
+      "expected": "B cells",
+      "best_cluster": "2",
+      "pct_in_best": 85.3,
+      "pct_elsewhere": 5.4,
+      "fold": 15.81
+    },
+    {
+      "gene": "CD3D",
+      "expected": "T cells",
+      "best_cluster": "0",
+      "pct_in_best": 87.4,
+      "pct_elsewhere": 23.9,
+      "fold": 3.65
+    },
+    {
+      "gene": "LYZ",
+      "expected": "monocytes",
+      "best_cluster": "4",
+      "pct_in_best": 100.0,
+      "pct_elsewhere": 53.0,
+      "fold": 1.89
+    },
+    {
+      "gene": "NKG7",
+      "expected": "NK and cytotoxic T cells",
+      "best_cluster": "1",
+      "pct_in_best": 97.3,
+      "pct_elsewhere": 16.3,
+      "fold": 5.97
+    },
+    {
+      "gene": "PPBP",
+      "expected": "platelets",
+      "best_cluster": "6",
+      "pct_in_best": 100.0,
+      "pct_elsewhere": 2.3,
+      "fold": 43.0
+    }
+  ],
+  "resolution": {
+    "0.25": 6,
+    "0.5": 6,
+    "0.7": 7,
+    "1.0": 9,
+    "1.5": 14,
+    "2.0": 20
+  },
+  "seeds": {
+    "against_seed": 13,
+    "ari": {
+      "100": 0.988,
+      "101": 0.9889,
+      "102": 0.9907,
+      "103": 0.996,
+      "104": 0.9965,
+      "105": 0.9903,
+      "106": 0.988,
+      "107": 0.9953,
+      "108": 0.9903,
+      "109": 0.9938
+    },
+    "min": 0.988
+  },
+  "de": {
+    "cluster": "2",
+    "cells_in_cluster": 341,
+    "real": {
+      "genes_tested": 13714,
+      "n_unadjusted_lt_05": 3252,
+      "pct_unadjusted_lt_05": 23.71,
+      "n_bh_lt_05": 2060
+    },
+    "shuffled": {
+      "genes_tested": 13714,
+      "n_unadjusted_lt_05": 684,
+      "pct_unadjusted_lt_05": 4.99,
+      "n_bh_lt_05": 7
+    },
+    "shuffled_no_tie_correction_secondary": {
+      "genes_tested": 13714,
+      "n_unadjusted_lt_05": 30,
+      "pct_unadjusted_lt_05": 0.22,
+      "n_bh_lt_05": 0
+    },
+    "top_real_genes": [
+      {
+        "names": "CD79A",
+        "logfoldchanges": 7.751200199127197,
+        "pvals_adj": 0.0
+      },
+      {
+        "names": "MS4A1",
+        "logfoldchanges": 6.375800132751465,
+        "pvals_adj": 0.0
+      },
+      {
+        "names": "CD79B",
+        "logfoldchanges": 5.521699905395508,
+        "pvals_adj": 0.0
+      },
+      {
+        "names": "TCL1A",
+        "logfoldchanges": 6.891200065612793,
+        "pvals_adj": 0.0
+      },
+      {
+        "names": "HLA-DQA1",
+        "logfoldchanges": 5.351900100708008,
+        "pvals_adj": 0.0
+      },
+      {
+        "names": "LINC00926",
+        "logfoldchanges": 7.255099773406982,
+        "pvals_adj": 0.0
+      },
+      {
+        "names": "VPREB3",
+        "logfoldchanges": 7.49970006942749,
+        "pvals_adj": 0.0
+      },
+      {
+        "names": "HLA-DQB1",
+        "logfoldchanges": 4.967100143432617,
+        "pvals_adj": 0.0
+      },
+      {
+        "names": "CD74",
+        "logfoldchanges": 4.0854997634887695,
+        "pvals_adj": 0.0
+      },
+      {
+        "names": "HLA-DRA",
+        "logfoldchanges": 4.888999938964844,
+        "pvals_adj": 0.0
+      }
+    ]
+  },
+  "predictions": [
+    {
+      "statement": "more than 90% zero",
+      "held": true
+    },
+    {
+      "statement": "6 to 10 clusters at 0.7",
+      "held": true
+    },
+    {
+      "statement": "at least 4 of 5 markers two-fold",
+      "held": true
+    },
+    {
+      "statement": "resolution 2.0 at least twice 0.25",
+      "held": true
+    },
+    {
+      "statement": "all seeds ARI at least 0.8",
+      "held": true
+    },
+    {
+      "statement": "shuffled 3-7% and at most 5 pass BH",
+      "held": false
+    },
+    {
+      "statement": "real labels at least 100 pass BH",
+      "held": true
+    }
+  ],
+  "post_hoc": {
+    "note": "not on the run card; written after prediction 6 missed",
+    "share_of_cells_in_group": 0.1293,
+    "rare_threshold_cells": 10,
+    "genes_detected_in_under_threshold": 2619,
+    "false_alarms_primary_shuffle": [
+      {
+        "gene": "SLC7A6OS",
+        "cells_detected": 82,
+        "in_group_a": 25,
+        "reported_p": 1.4095993775297543e-06,
+        "exact_detection_p": 1.7858708570769076e-05,
+        "bonferroni_exact": 0.24491432933952711
+      },
+      {
+        "gene": "PTRH2",
+        "cells_detected": 49,
+        "in_group_a": 17,
+        "reported_p": 4.779156385718282e-06,
+        "exact_detection_p": 6.797880669724692e-05,
+        "bonferroni_exact": 0.9322613550460442
+      },
+      {
+        "gene": "RP5-1142A6.2",
+        "cells_detected": 3,
+        "in_group_a": 3,
+        "reported_p": 6.88998002645504e-06,
+        "exact_detection_p": 0.002143397240817117,
+        "bonferroni_exact": 1.0
+      },
+      {
+        "gene": "GTF2IRD1",
+        "cells_detected": 3,
+        "in_group_a": 3,
+        "reported_p": 6.88998002645504e-06,
+        "exact_detection_p": 0.002143397240817117,
+        "bonferroni_exact": 1.0
+      },
+      {
+        "gene": "RAPH1",
+        "cells_detected": 3,
+        "in_group_a": 3,
+        "reported_p": 6.88998002645504e-06,
+        "exact_detection_p": 0.002143397240817117,
+        "bonferroni_exact": 1.0
+      },
+      {
+        "gene": "RHOD",
+        "cells_detected": 5,
+        "in_group_a": 4,
+        "reported_p": 7.718318125560496e-06,
+        "exact_detection_p": 0.0012339965128552051,
+        "bonferroni_exact": 1.0
+      },
+      {
+        "gene": "CCDC9",
+        "cells_detected": 27,
+        "in_group_a": 11,
+        "reported_p": 1.4380311372037884e-05,
+        "exact_detection_p": 0.00027168820880588455,
+        "bonferroni_exact": 1.0
+      }
+    ],
+    "twenty_more_shuffles": {
+      "pct_lt_05_min": 4.21,
+      "pct_lt_05_max": 6.23,
+      "n_bh_min": 0,
+      "n_bh_median": 3.0,
+      "n_bh_max": 8,
+      "shuffles_with_any_bh": 15,
+      "total_bh_rare": 37,
+      "total_bh_common": 25,
+      "pct_lt_05_common_min": 4.07,
+      "pct_lt_05_common_max": 6.46
+    },
+    "genes_with_no_detection_after_qc": 1
+  }
+}

@@ -1,0 +1,76 @@
+# Written and committed before any expression value was read, along with the unexecuted notebook that will produce the numbers.
+# Only the archive's size, hash and file list had been looked at.
+#
+# NOT BLIND: this is the dataset of Scanpy's own clustering tutorial. That tutorial page was read before registering and
+# reports 8 clusters at Leiden resolution 0.7, seed 0, after QC thresholds that this run reuses. Prediction 2 is therefore a check
+# that we can reproduce a known kind of result, not a forecast. Predictions 3 to 7 are about things that page does not report.
+id: x04-scanpy-walkthrough
+title: "Run the standard Scanpy workflow on 2,700 blood cells, and test how much of the answer depends on our choices"
+kind: exploration
+status: complete
+registered: 2026-11-09
+question: "Can a computer find cell types nobody labelled, and how do you tell a real difference in a gene from luck?"
+predictions:
+  - statement: "More than 90% of the entries in the raw matrix are zero."
+    refuted_by: "90% or fewer being zero."
+  - statement: "Leiden at resolution 0.7, seed 13, finds between 6 and 10 clusters."
+    refuted_by: "Fewer than 6 or more than 10 clusters."
+  - statement: "For at least four of the five marker genes MS4A1, CD3D, LYZ, NKG7 and PPBP, one cluster detects the gene in at least twice the share of cells as all other cells pooled."
+    refuted_by: "Three or fewer of the five meeting the two-fold threshold."
+  - statement: "The number of clusters at resolution 2.0 is at least twice the number at resolution 0.25, on the same cells and the same graph."
+    refuted_by: "Less than a two-fold increase."
+  - statement: "Across ten other random seeds at resolution 0.7, every clustering agrees with the seed-13 clustering at an adjusted Rand index of at least 0.8."
+    refuted_by: "Any seed below 0.8."
+  - statement: "With group labels shuffled, a tie-corrected Wilcoxon test across all genes gives between 3% and 7% of genes with unadjusted p below 0.05, and at most 5 genes pass Benjamini-Hochberg at 0.05."
+    refuted_by: "A share outside 3% to 7%, or more than 5 genes passing correction."
+  - statement: "With the real labels (the cluster where MS4A1 is detected most often, against all other cells), at least 100 genes pass Benjamini-Hochberg at 0.05."
+    refuted_by: "Fewer than 100 genes passing."
+dataset:
+  name: "3k PBMCs from a Healthy Donor, 10x Genomics (Cell Ranger 1.1.0)"
+  url: https://www.10xgenomics.com/datasets/3-k-pbm-cs-from-a-healthy-donor-1-standard-1-1-0
+  retrieved: 2026-11-09
+  license: "CC BY 4.0, per a search-engine excerpt of the dataset page; the page itself returned HTTP 429 to our fetcher, so re-read it in a browser before relying on this. The notebook downloads from 10x and we do not redistribute the data."
+  subset: "pbmc3k_filtered_gene_bc_matrices.tar.gz, https://cf.10xgenomics.com/samples/cell/pbmc3k/pbmc3k_filtered_gene_bc_matrices.tar.gz, sha256 847d6ebd9a1ec9a768f2be7e40ca42cbfe75ebeb6d76a4c24167041699dc28b5, all cells that pass the QC below"
+  citation: "10x Genomics, 3k PBMCs from a Healthy Donor. Scanpy: Wolf, Angerer & Theis, Genome Biology 2018, doi 10.1186/s13059-017-1382-0"
+compute:
+  where: local
+  notes: >
+    runs/x04-scanpy-walkthrough/walkthrough.ipynb, Python 3.12, versions pinned in requirements.txt. Fixed before running: keep genes in at least 3 cells;
+    keep cells with 200 < genes < 2500 and under 5% mitochondrial counts; normalize to 10,000 per cell, log1p; 2,000 highly variable genes
+    (flavor seurat); scale to max 10; 50 PCs (arpack, seed 13); neighbors n=10 on 40 PCs; Leiden igraph, 2 iterations, undirected, seed 13;
+    UMAP seed 13. Differential tests use log-normalized values on all genes kept, with shuffled labels from numpy default_rng(13). The notebook also reports
+    the same shuffled test without tie correction, Scanpy's default, as a secondary number and not a prediction.
+
+# Known limits, written before the result:
+# - Testing genes between clusters found in the same data is circular, so the real-label p-values in prediction 7 are too small. Shuffling labels tests
+#   multiple testing and does not test that circularity. S01E20 is where it gets examined.
+# - One donor, one sample, cells frozen and thawed by a commercial lab. Nothing here generalizes across people.
+# - Marker genes name a cell type only because earlier work says so; this run does not validate the labels independently.
+# - No model is scored, so this stays an exploration.
+
+# ─── everything below is written only after the run ───
+observed: >
+  Six of seven predictions held and one missed. The raw matrix is 2,700 cells by 32,738 genes and 97.41% zero. QC left 2,638 cells and 13,714
+  genes. Leiden at resolution 0.7, seed 13, found 7 clusters. Marker detection in the best cluster against all other cells was MS4A1 85.3% vs 5.4%,
+  CD3D 87.4% vs 23.9%, LYZ 100% vs 53.0%, NKG7 97.3% vs 16.3%, PPBP 100% vs 2.3%, so four of five reached two-fold and LYZ, at 1.89, did not. Cluster count
+  went 6, 6, 7, 9, 14, 20 at resolutions 0.25, 0.5, 0.7, 1.0, 1.5, 2.0. Against seed 13, ten other seeds gave adjusted Rand indices from 0.988 to 0.9965.
+  With the real labels, 2,060 genes passed Benjamini-Hochberg at 0.05. With shuffled labels, 4.99% of genes had unadjusted p below 0.05, inside the predicted range, but 7 genes passed
+  correction against a limit of 5. MISS. Scanpy's default with no tie correction gave 0.22% and 0 genes on the same shuffle. The first 40 principal components hold 12.45% of the variance in the scaled 2,000 highly variable genes.
+  Post-hoc, not on the card: 15 of 20 further shuffles had at least one gene pass correction (median 3, max 8). Of those 62 passes, 37 were genes detected in under 10 cells and 25 in 10 or more.
+interpreted: >
+  The workflow recovers groups that line up with known blood cell markers, and the grouping is stable across seeds at a fixed resolution. The number of groups is not a fact about the cells: it tripled
+  as one setting changed. For the miss, the seven shuffled-label genes had reported p-values about 13 to 311 times smaller than an exact count-based probability computed from detection alone, and none would survive a Bonferroni
+  correction of those exact values. That is consistent with the test's normal approximation being too confident for sparse genes, but this run did not establish it, and rarity alone does not explain it. Reported p-values from this test on sparse genes should not be read at face value.
+failures:
+  - "Prediction 6 missed: 7 genes passed correction on labels that carry no signal, against a limit of 5. Further shuffles show this was not one bad draw."
+  - "We expected rare genes to explain the false alarms after seeing them. 25 of 62 came from genes seen in 10 or more cells, so that explanation is incomplete."
+  - "LYZ fell short of two-fold (1.89) because it is detected in 53% of cells outside its best cluster. Prediction 3 held on four of five, not five of five."
+  - "Not blind: this is Scanpy's tutorial dataset and the page was read before registering. It reports 8 clusters at resolution 0.7, seed 0; we got 7 at seed 13 with newer library versions. We did not chase the difference."
+  - "The real-label test is circular, since the clusters came from the same data, so 2,060 is an overcount of unknown size."
+  - "Cluster names are inferred from marker genes; nothing here validates them independently. One donor, one sample."
+  - "Run only locally on Python 3.12. The notebook has a Colab install cell that was not exercised, so 'it runs in Colab' is untested."
+  - "One gene had no detected cells after QC, because gene filtering ran before cell filtering. It gives a divide warning and is reported as not significant."
+  - "An output bug in our first post-hoc cell corrupted the saved results files, and we fixed it and re-ran. The registered numbers were identical on all three executions."
+  - "The notebook as registered could not download its own data: 10x's server refuses Python's default downloader with HTTP 403. We had fetched the file with curl first, so our runs never hit that branch. A clean-install test caught it, and the cell now uses curl. Only the download line changed, and results are identical from a clean install."
+  - "The 10x page returned HTTP 429 to our fetcher, so the CC BY 4.0 licence is from a search excerpt of that page and still needs reading directly."
+artifact: runs/x04-scanpy-walkthrough/walkthrough.ipynb
