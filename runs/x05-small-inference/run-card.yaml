@@ -1,0 +1,54 @@
+# Written and committed before the model was downloaded or run. No weights, checkpoints or evaluation files were fetched
+# while writing it: only the public README, run config, file listing and source code were read, plus the dataset's k562.toml.
+#
+# LICENCE GATE: State's weights and outputs are under the Arc Research Institute State Model Non-Commercial License (last
+# updated 23 June 2025, read 2026-11-10). Section 1.4 excludes research or educational work "engaged in or sponsored by a
+# Commercial Entity" from Non-Commercial Purposes. Whether this run qualifies depends on who runs it and for whom; that is the
+# user's decision (and, if in doubt, Arc's: legal@arcinstitute.org). The notebook refuses to download anything until the
+# person running it sets ACCEPT_STATE_NONCOMMERCIAL_LICENSE = True. Any shown output must carry the citation the licence
+# requires: Adduri, A. et al. (2025) Predicting cellular responses to perturbation across diverse contexts with State.
+#
+# Read from the code before registering (so not predictions): `state tx infer` gives a perturbation missing from its one-hot
+# map the control one-hot, printing "not in mapping; using control fallback one-hot", rather than raising an error.
+id: x05-small-inference
+title: "Ask a pretrained State model what happens after five knockdowns it never trained on in K562, and look at the answer"
+kind: exploration
+status: registered
+registered: 2026-11-10
+question: "What does it look like to actually run a virtual cell model, and what can't its answer tell you?"
+predictions:
+  - statement: "After downloads, the inference step finishes on a free Colab T4 GPU in under 10 minutes."
+    refuted_by: "It fails on a T4, or takes 10 minutes or more."
+  - statement: "For at least 4 of the 5 chosen knockdowns, the predicted mean of the targeted gene in its own predicted cells is lower than in the predicted non-targeting cells."
+    refuted_by: "3 or fewer of 5. If the files do not name the 2,000 output genes, this is recorded as not evaluable, not as held."
+  - statement: "The model's predicted changes differ between knockdowns: the mean pairwise Pearson correlation of the five predicted change vectors (each knockdown's predicted mean minus the predicted non-targeting mean, over the output genes) is below 0.9."
+    refuted_by: "A mean pairwise correlation of 0.9 or higher, meaning the predicted changes are close to the same for every knockdown."
+  - statement: "Asking for a gene name that is not in the model's vocabulary returns a prediction, with no error."
+    refuted_by: "The run raises an error for the unknown name."
+dataset:
+  name: "Replogle et al. 2022 genome-scale CRISPRi Perturb-seq, K562, as processed for State's evaluation"
+  url: https://huggingface.co/arcinstitute/ST-HVG-Replogle
+  retrieved: 2026-11-10
+  license: "Released with the State model files under the Arc State Model Non-Commercial License; split from arcinstitute/State-Replogle-Filtered (no licence tag on the repository)"
+  subset: >-
+    Control cells (gene == non-targeting) from fewshot/k562/eval_best.ckpt/adata_real.h5ad in arcinstitute/ST-HVG-Replogle at
+    revision bb6a9562cbbf1fd152df14cc53b4cc7517c77175. Targets: the first five perturbations, in alphabetical order, from the
+    K562 fewshot test list in arcinstitute/State-Replogle-Filtered k562.toml (revision d790193bb2c93726541a75ca3fa873a92ed44da5,
+    969 genes) whose gene is among the model's output genes. 256 control cells, seed 13; 128 cells per knockdown.
+  citation: "Replogle et al., Cell 2022, doi 10.1016/j.cell.2022.05.013; Adduri et al., Predicting cellular responses to perturbation across diverse contexts with State (bioRxiv 2025; Cell 2026)"
+compute:
+  where: colab
+  notes: >-
+    runs/x05-small-inference/inference.ipynb on a Colab T4. arc-state 0.11.1 from PyPI, ST-HVG-Replogle fewshot/k562
+    final.ckpt. About 0.5 GB of weights and 1.1 GB of evaluation data downloaded. The notebook does not run on CPU.
+models:
+  - {name: state-st-hvg-replogle-fewshot-k562, kind: pretrained, version: "arcinstitute/ST-HVG-Replogle@bb6a956, final.ckpt; arc-state 0.11.1", license: "Arc State Model Non-Commercial License", monetized_ok: false}
+
+# Known limits, written before the result:
+# - The real held-out responses for these knockdowns are in the same file. This exploration deliberately does not compare
+#   predictions with them: that is a score, and scoring belongs to the benchmark runs in chapter 6, with baselines.
+# - Prediction 2 checks the output against what CRISPRi should do, not against measured data.
+# - K562 is a leukemia line; the model's answer says nothing about other cell types or about tissue.
+# - The output is model_output, a prediction of mean expression shifts, not a finding about biology.
+
+# ─── everything below is written only after the run ───

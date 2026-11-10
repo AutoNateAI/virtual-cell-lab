@@ -12,6 +12,7 @@ and the raw records it used. What went wrong is written down on the card too.
 | [x02](runs/x02-two-cell-types/) | How different are the genes switched on in a lung cell and a T cell? | [results](runs/x02-two-cell-types/results.md) |
 | [x03](runs/x03-open-a-dataset/) | What is actually in a real Perturb-seq file? | [results](runs/x03-open-a-dataset/results.md) |
 | [x04](runs/x04-scanpy-walkthrough/) | Can a computer find cell types nobody labelled, and how do you tell a real difference from luck? | [results](runs/x04-scanpy-walkthrough/results.md) |
+| [x05](runs/x05-small-inference/) | What does it look like to run a virtual cell model, and what can't its answer tell you? | registered, not yet run |
 
 ## Licences
 
