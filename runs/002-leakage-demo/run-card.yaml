@@ -1,0 +1,92 @@
+# Written and committed before any expression value was read (only the label files listed on run 001's card had been seen).
+# A deliberate leakage demonstration: the same three simple models scored on a leaky split and on a fair one.
+id: 002-leakage-demo
+title: "How much of a great score comes from splitting the data wrong?"
+kind: benchmark
+status: complete
+registered: 2026-11-10
+question: "How much better does a model that just remembers each perturbation look when test cells come from perturbations it has already seen?"
+predictions:
+  - statement: "On the leaky split, the lookup model's mean Pearson delta across the 150 perturbations is at least 0.8."
+    refuted_by: "A mean below 0.8."
+  - statement: "The lookup model's mean Pearson delta falls by at least 0.4 from the leaky split to the fair split."
+    refuted_by: "A drop smaller than 0.4."
+  - statement: "On the fair split, the perturbation-mean baseline has a mean Pearson delta above 0.2 on the 30 held-out perturbations."
+    refuted_by: "0.2 or below."
+  - statement: "On the fair split, the perturbation-mean baseline has lower mean squared error than the control-mean baseline."
+    refuted_by: "Equal or higher MSE."
+  - statement: "On the leaky split, the lookup model has lower MSE than both baselines for at least 90% of the 150 perturbations."
+    refuted_by: "Fewer than 135 of 150."
+dataset:
+  name: "Virtual Cell Challenge 2025, H1 hESC CRISPRi Perturb-seq, training file only"
+  url: https://github.com/ArcInstitute/arc-virtual-cell-atlas/tree/main/virtual-cell-challenge
+  retrieved: 2026-11-10
+  license: "CC0 1.0, per the Arc Virtual Cell Atlas page"
+  subset: "adata_Training.h5ad (crc32c /Z0row==): the 150 training perturbations and the non-targeting control cells. Validation and test files are not used."
+  citation: "Arc Institute, Virtual Cell Challenge 2025 (Roohani et al., Cell 2025, doi 10.1016/j.cell.2025.06.008)"
+split:
+  kind: random_cells
+  leakage_demo: true
+  seed: 13
+  holdout_file: runs/002-leakage-demo/holdout.txt
+compute:
+  where: local
+  notes: >-
+    runs/002-leakage-demo/leakage.py, h5py in row chunks. Two splits on the same cells. Leaky (random_cells): each cell goes
+    to test with probability 0.2 (numpy default_rng(13)), so all 150 perturbations are on both sides. Fair (held out whole): the 30
+    perturbations in the holdout file are test, everything else including all controls is train. Cells are scaled to 10,000 counts
+    and log1p-transformed; pseudobulk = mean per perturbation per side. Genes scored: the 1,000 with highest mean in train-side
+    control cells, chosen separately for each split from training data only. Pearson delta per test perturbation: correlation of
+    (prediction minus train control mean) with (observed test mean minus train control mean) over those genes; MSE of prediction
+    against observed test mean. Reported as means across test perturbations. Undefined Pearson (a constant prediction) is recorded
+    as undefined, not zero.
+models:
+  - {name: control-mean, kind: baseline, version: "n/a", license: "ours", monetized_ok: true}
+  - {name: perturbation-mean, kind: baseline, version: "n/a", license: "ours", monetized_ok: true}
+  - {name: lookup, kind: custom, version: "n/a", license: "ours", monetized_ok: true}
+metrics: [pearson-delta, mse]
+
+# What the models are:
+# - control-mean: predicts the train-side control mean for every perturbation (Pearson delta is undefined for it).
+# - perturbation-mean: predicts the average of the train-side perturbation means, the same for every perturbation.
+# - lookup: predicts the train-side mean of the same perturbation if it was seen, else falls back to perturbation-mean. On the fair
+#   split it therefore equals perturbation-mean by construction; the demonstration is how good it looks on the leaky split.
+# Known limits, written before the result: Pearson delta over 1,000 genes is one metric among many; weak knockdowns have deltas that
+# are mostly noise, which pulls the mean down on either split; one cell line.
+
+# ─── everything below is written only after the run ───
+results:
+  - {model: control-mean, metric: pearson-delta, value: null, split: leaky, note: "undefined: a constant prediction has no correlation"}
+  - {model: control-mean, metric: mse, value: 0.006318, split: leaky}
+  - {model: perturbation-mean, metric: pearson-delta, value: 0.189, split: leaky}
+  - {model: perturbation-mean, metric: mse, value: 0.006018, split: leaky}
+  - {model: lookup, metric: pearson-delta, value: 0.7601, split: leaky}
+  - {model: lookup, metric: mse, value: 0.000855, split: leaky}
+  - {model: control-mean, metric: pearson-delta, value: null, split: fair, note: "undefined: a constant prediction has no correlation"}
+  - {model: control-mean, metric: mse, value: 0.005583, split: fair}
+  - {model: perturbation-mean, metric: pearson-delta, value: 0.2051, split: fair}
+  - {model: perturbation-mean, metric: mse, value: 0.005243, split: fair}
+  - {model: lookup, metric: pearson-delta, value: 0.2051, split: fair}
+  - {model: lookup, metric: mse, value: 0.005243, split: fair}
+observed: >
+  Three of five predictions held and two missed. On the leaky split the lookup model's mean Pearson delta across 150 perturbations was
+  0.7601 (predicted at least 0.8: MISS), against 0.189 for the perturbation mean; its mean MSE was 0.000855 against 0.006018 and
+  0.006318 for the baselines. It beat both baselines on MSE for 130 of 150 perturbations (predicted at least 135: MISS). On the fair
+  split, with 30 perturbations held out whole, lookup can only fall back to the perturbation mean: 0.2051, a drop of 0.555. The
+  perturbation mean reached 0.2051 on the fair split (above 0.2, held), and its MSE, 0.005243, was below the control mean's 0.005583
+  (held). Median 200 test cells per perturbation on the leaky split. Post-hoc, not on the card: lookup's leaky Pearson delta rank-
+  correlated 0.808 with effect size (mean squared shift from control); it averaged 0.94 on the strongest quarter and 0.41 on the
+  weakest, and 17 of its 20 MSE misses were in the weakest quarter.
+interpreted: >
+  Letting cells from the same perturbation sit on both sides of a split turned a model that only remembers averages into one that
+  looks strong, 0.76 against 0.21 on the same cells and metric. None of that gap is prediction. The misses were where the true shift is
+  small enough that 200 cells' noise swamps it, which also means a fair benchmark will struggle to score weak perturbations at all.
+failures:
+  - "Prediction 1 missed: lookup reached 0.76, not 0.8. Weak knockdowns pulled the mean down; on the strongest quarter it was 0.94."
+  - "Prediction 5 missed: lookup beat both baselines on MSE for 130 of 150, not 135. 17 of the 20 exceptions were among the weakest effects."
+  - "Prediction 3 held by 0.005 (0.2051 against a 0.2 threshold): it would not survive a slightly different held-out draw without checking."
+  - "The fair split uses 30 perturbations from one seed; there is no interval and no repeat across held-out draws."
+  - "One metric pair on the 1,000 most expressed control genes. The Challenge's own metrics (DES, PDS, MAE) were not used."
+  - "The control cells used for both splits are the same 38,176 cells shared across all three Challenge files (run 001)."
+dossier: our-002-leakage-demo
+artifact: https://github.com/AutoNateAI/virtual-cell-lab/tree/main/runs/002-leakage-demo

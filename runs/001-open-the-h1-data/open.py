@@ -1,0 +1,103 @@
+#!/usr/bin/env python3
+"""Run 001: open the Virtual Cell Challenge 2025 H1 files and check what is in them. No model is involved.
+
+    python3 -I runs/001-open-the-h1-data/open.py <dir containing train/ validation/ test/>
+
+Files: gs://arc-institute-virtual-cell-atlas/virtual-cell-challenge/2025/ (CC0 1.0).
+"""
+import json
+import sys
+from pathlib import Path
+
+import h5py
+import numpy as np
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import h5chunks as h5  # noqa: E402
+
+HERE = Path(__file__).resolve().parent
+PERT, CTRL = "target_gene", "non-targeting"
+FILES = {"training": "train/adata_Training.h5ad", "validation": "validation/adata_Validation.h5ad", "test": "test/adata_Test.h5ad"}
+
+
+def open_one(path):
+    with h5py.File(path, "r") as f:
+        cols = h5.obs_names(f)
+        if PERT not in cols:
+            raise SystemExit(f"{path}: no obs column {PERT!r}; columns are {cols}")
+        pert = h5.obs_column(f, PERT)
+        genes = h5.var_names(f)
+        n, m = h5.shape(f)
+        labels = sorted(set(pert))
+        if CTRL not in labels:
+            raise SystemExit(f"{path}: no {CTRL!r} label; labels include {labels[:10]}")
+        targets = [p for p in labels if p not in (CTRL, "")]
+        col = {g: i for i, g in enumerate(genes)}
+        measured = [t for t in targets if t in col]
+        tcols = np.array([col[t] for t in measured])
+        ctrl = pert == CTRL
+
+        nnz, int_valued = 0, True
+        own_sum = {t: 0.0 for t in measured}
+        ctrl_sum = np.zeros(len(measured))
+        for start, block in h5.row_chunks(f):
+            nnz += block.nnz
+            if int_valued and block.nnz and not np.allclose(block.data[:1000], np.round(block.data[:1000])):
+                int_valued = False
+            totals = np.asarray(block.sum(axis=1)).ravel()
+            scale = np.divide(1e4, totals, out=np.zeros_like(totals, dtype=float), where=totals > 0)
+            sub = block[:, tcols].toarray() * scale[:, None]
+            rows = pert[start:start + block.shape[0]]
+            ctrl_sum += sub[rows == CTRL].sum(axis=0)
+            for j, t in enumerate(measured):
+                own_sum[t] += sub[rows == t, j].sum()
+
+        counts = {t: int((pert == t).sum()) for t in targets}
+        ctrl_mean = ctrl_sum / ctrl.sum()
+        ratio = {t: (own_sum[t] / counts[t]) / ctrl_mean[j] if ctrl_mean[j] > 0 else None for j, t in enumerate(measured)}
+        return {
+            "cells": n, "genes": m, "x_encoding": h5.encoding(f), "integer_counts": int_valued, "obs_columns": cols,
+            "zero_pct": round(100 * (1 - nnz / (n * m)), 2), "targets": targets, "control_cells": int(ctrl.sum()),
+            "control_pct": round(100 * float(ctrl.mean()), 2), "unlabelled_cells": int((pert == "").sum()),
+            "cells_per_target_median": float(np.median(list(counts.values()))), "targets_not_measured": [t for t in targets if t not in col],
+            "knockdown_ratio": {t: (round(float(r), 4) if r is not None else None) for t, r in ratio.items()},
+        }
+
+
+def main(root):
+    root = Path(root)
+    out = {name: open_one(root / rel) for name, rel in FILES.items()}
+    sets = {k: set(v["targets"]) for k, v in out.items()}
+    every = set().union(*sets.values())
+    overlap = sorted((sets["training"] & sets["validation"]) | (sets["training"] & sets["test"]) | (sets["validation"] & sets["test"]))
+    ratios = {t: r for v in out.values() for t, r in v["knockdown_ratio"].items() if r is not None}
+    below = sum(1 for r in ratios.values() if r < 0.5)
+    summary = {
+        "targets_total": len(every), "per_file": {k: len(v) for k, v in sets.items()}, "overlap": overlap,
+        "every_file_has_controls": all(v["control_cells"] > 0 for v in out.values()),
+        "training_zero_pct": out["training"]["zero_pct"], "not_measured": sorted({t for v in out.values() for t in v["targets_not_measured"]}),
+        "targets_below_half_control": below, "targets_with_ratio": len(ratios), "training_control_pct": out["training"]["control_pct"],
+        "weakest_knockdowns": sorted(ratios.items(), key=lambda kv: -kv[1])[:10],
+    }
+    summary["predictions"] = [
+        {"statement": "300 targets, 150/50/100, no overlap, controls in each file",
+         "held": len(every) == 300 and [len(sets[k]) for k in FILES] == [150, 50, 100] and not overlap and summary["every_file_has_controls"]},
+        {"statement": "training matrix under 85% zero", "held": summary["training_zero_pct"] < 85},
+        {"statement": "all targets measured", "held": not summary["not_measured"]},
+        {"statement": "at least 90% of targets below half the control level", "held": below >= 0.9 * 300},
+        {"statement": "controls over 10% of training cells", "held": summary["training_control_pct"] > 10},
+    ]
+    (HERE / "results.json").write_text(json.dumps({"summary": summary, "files": out}, indent=2) + "\n")
+    lines = ["# Run 001: opening the 2025 Challenge H1 data", "", "Generated by `open.py`.", ""]
+    for k, v in out.items():
+        lines.append(f"- {k}: {v['cells']:,} cells × {v['genes']:,} genes, {v['zero_pct']}% zero, {len(v['targets'])} targets, "
+                     f"{v['control_cells']:,} control cells ({v['control_pct']}%), median {v['cells_per_target_median']:,.0f} cells per target, X {v['x_encoding']}, integer counts: {v['integer_counts']}")
+    lines += ["", f"Targets below half the control level: {below} of {len(ratios)}", "", "| Prediction | Held |", "|---|---|"]
+    lines += [f"| {p['statement']} | {'yes' if p['held'] else 'NO'} |" for p in summary["predictions"]]
+    lines += ["", "Weakest knockdowns (target level in own cells / control):", ""] + [f"- {t}: {r}" for t, r in summary["weakest_knockdowns"]]
+    (HERE / "results.md").write_text("\n".join(lines) + "\n")
+    print("\n".join(lines))
+
+
+if __name__ == "__main__":
+    main(sys.argv[1])

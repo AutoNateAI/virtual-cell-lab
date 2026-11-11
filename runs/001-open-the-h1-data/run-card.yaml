@@ -1,0 +1,51 @@
+# Written and committed before any expression value was read. Seen first: Arc's 2025 data note, the bucket listing (file sizes),
+# gene_names.csv (18,080 lines), and the three pert_counts CSVs, which give 150/50/100 targets, cells per target (up to about
+# 4,700) and a median of roughly 54,000 molecules per cell. Those numbers are therefore not predictions here.
+id: 001-open-the-h1-data
+title: "Open the Virtual Cell Challenge 2025 H1 data and check what is in it before any model sees it"
+kind: exploration
+status: complete
+registered: 2026-11-10
+question: "What did Arc actually measure for the 2025 Challenge, and does the data match what was described?"
+predictions:
+  - statement: "Across the three files there are exactly 300 distinct target genes (150 training, 50 validation, 100 test), no target appears in more than one file, and each file also holds non-targeting control cells."
+    refuted_by: "Any other count, a target in two files, or a file with no control cells."
+  - statement: "Fewer than 85% of the entries in the training matrix are zero."
+    refuted_by: "85% or more zero."
+  - statement: "All 300 targets are among the measured genes."
+    refuted_by: "Any target missing from the gene list."
+  - statement: "For at least 90% of the 300 targets, mean normalized expression of the target gene in its own cells is below 50% of the control mean in the same file."
+    refuted_by: "Fewer than 90% (270) of targets below half the control level."
+  - statement: "Non-targeting control cells are more than 10% of the cells in the training file."
+    refuted_by: "10% or fewer."
+dataset:
+  name: "Virtual Cell Challenge 2025, H1 hESC CRISPRi Perturb-seq (training, validation and test files)"
+  url: https://github.com/ArcInstitute/arc-virtual-cell-atlas/tree/main/virtual-cell-challenge
+  retrieved: 2026-11-10
+  license: "CC0 1.0, per the Arc Virtual Cell Atlas page"
+  subset: >-
+    gs://arc-institute-virtual-cell-atlas/virtual-cell-challenge/2025/{train,validation,test}/adata_*.h5ad, all cells. Object
+    crc32c: Training /Z0row==, Validation EendZg==, Test JMP5RQ== (sizes 15,482,497,461; 6,928,967,541; 11,950,739,168 bytes).
+  citation: "Arc Institute, Virtual Cell Challenge 2025 (Roohani et al., Cell 2025, doi 10.1016/j.cell.2025.06.008)"
+compute:
+  where: local
+  notes: >-
+    runs/001-open-the-h1-data/open.py, reads each file with h5py in row chunks (MacBook Air M1, 16 GB). Normalization
+    for prediction 4: each cell scaled to 10,000 total counts, no log; mean per group. The perturbation column is target_gene and
+    the control label non-targeting; if the files use other names, the script stops and the change is recorded in failures.
+
+# ─── everything below is written only after the run ───
+observed: >
+  All five predictions held. Training: 221,273 cells; validation: 98,927; test: 170,846; each by 18,080 genes, stored as integer counts.
+  There are exactly 300 targets, 150, 50 and 100, with no target in two files, and all 300 are among the measured genes. 51.69% of
+  the training matrix is zero. Median cells per target: 1,045 (training), 1,090 (validation), 1,142 (test). 293 of 300 targets were
+  below half the control level in their own cells; the weakest were HIRA (0.89 of control), SET (0.67), DPF2 (0.61), CAST (0.59),
+  MED15 (0.58), CTBP2 (0.52) and NFE2L1 (0.52). Every file holds the same 38,176 non-targeting control cells, identical by cell
+  barcode (checked after the run), which are 17.25% of the training file. obs columns: batch, guide_id, target_gene.
+failures:
+  - "Not blind on cell counts or depth: the pert_counts files had been read before registering, so cells per target and molecules per cell were not predictions."
+  - "The 38,176 control cells are shared by all three files. Any baseline or score built on control means uses the same cells whichever file it starts from; noticed after the run."
+  - "Knockdown is measured as normalized level in targeted cells over control cells, with no test. Seven targets were above half the control level, HIRA barely knocked down at all."
+  - "The run reads only counts and labels; guide-level differences (guide_id) and batch were not examined."
+  - "Runs on 300 genes in one stem cell line; nothing here says how other cell types respond."
+artifact: https://github.com/AutoNateAI/virtual-cell-lab/tree/main/runs/001-open-the-h1-data
