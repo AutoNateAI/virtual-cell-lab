@@ -42,10 +42,13 @@ observed: >
   below half the control level in their own cells; the weakest were HIRA (0.89 of control), SET (0.67), DPF2 (0.61), CAST (0.59),
   MED15 (0.58), CTBP2 (0.52) and NFE2L1 (0.52). Every file holds the same 38,176 non-targeting control cells, identical by cell
   barcode (checked after the run), which are 17.25% of the training file. obs columns: batch, guide_id, target_gene.
+  Post-hoc: counting each shared control cell once, the three files hold 414,694 distinct cells (491,046 rows minus 2 × 38,176),
+  against "~300,000 cells" in Arc's data note. We have not found why.
 failures:
   - "Not blind on cell counts or depth: the pert_counts files had been read before registering, so cells per target and molecules per cell were not predictions."
   - "The 38,176 control cells are shared by all three files. Any baseline or score built on control means uses the same cells whichever file it starts from; noticed after the run."
   - "Knockdown is measured as normalized level in targeted cells over control cells, with no test. Seven targets were above half the control level, HIRA barely knocked down at all."
   - "The run reads only counts and labels; guide-level differences (guide_id) and batch were not examined."
   - "Runs on 300 genes in one stem cell line; nothing here says how other cell types respond."
+  - "Our distinct-cell count (414,694) does not match Arc's stated ~300,000. Unexplained: it may count something different, or the files may include cells the note does not."
 artifact: https://github.com/AutoNateAI/virtual-cell-lab/tree/main/runs/001-open-the-h1-data
